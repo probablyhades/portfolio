@@ -4,8 +4,8 @@
 
 /* Works Header */
 .works-header {
-    padding-top: calc(var(--space-32) + 80px);
-    padding-bottom: var(--space-12);
+    padding-top: calc(var(--space-24) + 80px);
+    padding-bottom: var(--space-6);
     text-align: center;
     background: var(--color-bg-primary);
     border-bottom: 1px solid var(--color-border);
@@ -19,20 +19,20 @@
 
 .works-header__eyebrow {
     font-family: var(--font-mono);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-ultra);
     color: var(--color-accent);
-    margin-bottom: var(--space-4);
+    margin-bottom: var(--space-2);
 }
 
 .works-header__title {
     font-family: var(--font-extended);
-    font-size: var(--text-7xl);
+    font-size: var(--text-6xl);
     text-transform: uppercase;
-    letter-spacing: var(--tracking-wide);
+    letter-spacing: var(--tracking-normal);
     line-height: var(--leading-none);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-3);
 }
 
 .works-header__title .text-gradient {
@@ -42,7 +42,7 @@
 }
 
 .works-header__subtitle {
-    font-size: var(--text-lg);
+    font-size: var(--text-base);
     color: var(--color-text-secondary);
     max-width: 500px;
     margin: 0 auto;

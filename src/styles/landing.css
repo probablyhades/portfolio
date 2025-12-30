@@ -52,11 +52,11 @@
 
 .hero__eyebrow {
     font-family: var(--font-mono);
-    font-size: var(--text-sm);
+    font-size: var(--text-xs);
     text-transform: uppercase;
     letter-spacing: var(--tracking-ultra);
     color: var(--color-accent);
-    margin-bottom: var(--space-6);
+    margin-bottom: var(--space-4);
     display: flex;
     align-items: center;
     gap: var(--space-3);
@@ -71,11 +71,11 @@
 
 .hero__title {
     font-family: var(--font-extended);
-    font-size: var(--text-7xl);
+    font-size: var(--text-6xl);
     text-transform: uppercase;
     line-height: var(--leading-none);
-    letter-spacing: var(--tracking-tight);
-    margin-bottom: var(--space-8);
+    letter-spacing: var(--tracking-normal);
+    margin-bottom: var(--space-6);
 }
 
 .hero__title .text-accent,
