@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Harry | Film & Video Production</title>
+    <meta name="description"
+        content="Freelance video editor and broadcast director based in Sydney, Australia with 4+ years of experience creating content online + studied experience in short film & other productions.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="src/styles/landing.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav__container">
+            <a href="/" class="nav__logo">Harry</a>
+            <div class="nav__links">
+                <a href="/" class="nav__link active">Home</a>
+                <a href="works.html" class="nav__link">Works</a>
+                <a href="mailto:harry@40degree.media" class="nav__link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero__bg">
+            <div class="hero__gradient"></div>
+            <div class="hero__noise"></div>
+        </div>
+
+        <div class="hero__container">
+            <div class="hero__content">
+                <div class="hero__text">
+                    <p class="hero__eyebrow animate-fade-in-up">Video Editor & Broadcast Director</p>
+                    <h1 class="hero__title animate-fade-in-up" style="animation-delay: 100ms;">
+                        Crafting <span class="font-serif text-gradient">Visual Stories</span><br>
+                        That Resonate
+                    </h1>
+                    <p class="hero__description animate-fade-in-up" style="animation-delay: 200ms;">
+                        Hey there! I'm a freelance video editor and broadcast director based in Sydney, Australia with
+                        4+ years of experience creating content online + studied experience in short film & other
+                        productions.
+                    </p>
+                    <div class="hero__cta animate-fade-in-up" style="animation-delay: 300ms;">
+                        <a href="mailto:harry@40degree.media" class="btn btn--primary">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            Get in Touch
+                        </a>
+                        <a href="works.html" class="btn btn--outline">View All Works</a>
+                    </div>
+                </div>
+
+                <div class="hero__image animate-scale-in" style="animation-delay: 200ms;">
+                    <div class="hero__image-wrapper">
+                        <img src="assets/images/headshot.png" alt="Harry - Video Editor & Broadcast Director"
+                            class="hero__headshot">
+                        <div class="hero__image-glow"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero__scroll-indicator">
+            <span>Scroll</span>
+            <div class="hero__scroll-line"></div>
+        </div>
+    </section>
+
+    <!-- Recent Works Section -->
+    <section class="section works-section" id="works">
+        <div class="section__container">
+            <div class="section__header">
+                <p class="section__eyebrow">Portfolio</p>
+                <h2 class="section__title font-serif">Recent <span class="text-gradient">Works</span></h2>
+                <p class="section__subtitle">A selection of my latest film and video production projects</p>
+            </div>
+
+            <div class="works-grid stagger" id="works-grid">
+                <!-- Works will be loaded dynamically -->
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+            </div>
+
+            <div class="works-section__cta">
+                <a href="works.html" class="btn btn--outline">View All Works</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <p class="footer__text">&copy; 2025 Harry. All rights reserved.</p>
+            <div class="footer__links">
+                <a href="mailto:harry@40degree.media" class="footer__link">harry@40degree.media</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="src/js/landing.js"></script>
+</body>
+
+</html>

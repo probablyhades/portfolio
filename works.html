@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Works | Harry - Film & Video Production</title>
+    <meta name="description"
+        content="Browse my portfolio of film and video production work including editing, color grading, and broadcast direction.">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Styles -->
+    <link rel="stylesheet" href="src/styles/main.css">
+    <link rel="stylesheet" href="src/styles/works.css">
+</head>
+
+<body>
+    <!-- Navigation -->
+    <nav class="nav" id="nav">
+        <div class="nav__container">
+            <a href="/" class="nav__logo">Harry</a>
+            <div class="nav__links">
+                <a href="/" class="nav__link">Home</a>
+                <a href="works.html" class="nav__link active">Works</a>
+                <a href="mailto:harry@40degree.media" class="nav__link">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Works Header -->
+    <section class="works-header">
+        <div class="works-header__container">
+            <p class="works-header__eyebrow">Portfolio</p>
+            <h1 class="works-header__title font-serif">All <span class="text-gradient">Works</span></h1>
+            <p class="works-header__subtitle">Browse my complete collection of film and video production projects</p>
+        </div>
+    </section>
+
+    <!-- Filter Section -->
+    <section class="filter-section">
+        <div class="filter-section__container">
+            <div class="filter-pills" id="filter-pills">
+                <button class="filter-pill active" data-role="all">All</button>
+                <!-- Role filters will be added dynamically -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Works Grid -->
+    <section class="section works-main">
+        <div class="section__container">
+            <div class="works-grid stagger" id="works-grid">
+                <!-- Works will be loaded dynamically -->
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+                <div class="skeleton skeleton--card"></div>
+            </div>
+
+            <div class="works-empty" id="works-empty" style="display: none;">
+                <p>No works found matching the selected filter.</p>
+                <button class="btn btn--outline" id="clear-filter">Show All Works</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer__container">
+            <p class="footer__text">&copy; 2025 Harry. All rights reserved.</p>
+            <div class="footer__links">
+                <a href="mailto:harry@40degree.media" class="footer__link">harry@40degree.media</a>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="src/js/works.js"></script>
+</body>
+
+</html>
