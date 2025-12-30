@@ -346,6 +346,9 @@ ol {
     margin-bottom: var(--space-2);
     transform: translateY(10px);
     transition: var(--transition-base);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .work-card:hover .work-card__title {
@@ -479,7 +482,7 @@ ol {
 
 .works-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(min(350px, 100%), 1fr));
     gap: var(--space-4);
 }
 
@@ -636,9 +639,10 @@ ol {
 
 @media (max-width: 768px) {
     :root {
-        --text-6xl: 3.5rem;
-        --text-7xl: 4.5rem;
-        --text-8xl: 6rem;
+        --text-5xl: 2.5rem;
+        --text-6xl: 3rem;
+        --text-7xl: 4rem;
+        --text-8xl: 5rem;
     }
 
     .nav__links {
@@ -649,8 +653,17 @@ ol {
         padding: var(--space-16) var(--space-6);
     }
 
+    .section__title {
+        font-size: var(--text-4xl);
+    }
+
     .works-grid {
         grid-template-columns: 1fr;
+        gap: var(--space-3);
+    }
+
+    .work-card__title {
+        font-size: var(--text-xl);
     }
 
     .footer__container {
@@ -658,18 +671,108 @@ ol {
         gap: var(--space-6);
         text-align: center;
     }
+
+    .footer__links {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .btn {
+        padding: var(--space-3) var(--space-5);
+        font-size: var(--text-xs);
+    }
 }
 
 @media (max-width: 480px) {
+    :root {
+        --text-4xl: 1.75rem;
+        --text-5xl: 2rem;
+        --text-6xl: 2.5rem;
+        --text-7xl: 3rem;
+        --text-8xl: 4rem;
+    }
+
     .nav {
-        padding: var(--space-4);
+        padding: var(--space-4) var(--space-3);
     }
 
     .nav__logo {
-        font-size: var(--text-xl);
+        font-size: var(--text-lg);
+    }
+
+    .nav__links {
+        gap: var(--space-3);
     }
 
     .nav__link {
+        font-size: 0.65rem;
+        letter-spacing: var(--tracking-normal);
+    }
+
+    .section {
+        padding: var(--space-12) var(--space-4);
+    }
+
+    .section__header {
+        margin-bottom: var(--space-10);
+    }
+
+    .section__title {
+        font-size: var(--text-3xl);
+    }
+
+    .section__subtitle {
+        font-size: var(--text-base);
+    }
+
+    .footer {
+        padding: var(--space-10) var(--space-4);
+    }
+
+    .footer__text {
         font-size: var(--text-xs);
+    }
+
+    .footer__link {
+        font-size: var(--text-xs);
+    }
+
+    .work-card__overlay {
+        padding: var(--space-4);
+    }
+
+    .work-card__title {
+        font-size: var(--text-lg);
+    }
+
+    .work-card__role {
+        font-size: 0.65rem;
+        padding: var(--space-1) var(--space-2);
+    }
+
+    .filter-pill {
+        padding: var(--space-2) var(--space-4);
+        font-size: var(--text-xs);
+    }
+}
+
+@media (max-width: 360px) {
+    :root {
+        --text-3xl: 1.5rem;
+        --text-4xl: 1.75rem;
+        --text-5xl: 2rem;
+        --text-6xl: 2.25rem;
+    }
+
+    .nav__logo {
+        font-size: var(--text-base);
+    }
+
+    .nav__link {
+        font-size: 0.6rem;
+    }
+
+    .section {
+        padding: var(--space-10) var(--space-3);
     }
 }
