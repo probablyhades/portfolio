@@ -49,6 +49,8 @@
 
 .hero__text {
     max-width: 800px;
+    width: 100%;
+    overflow-wrap: break-word;
 }
 
 .hero__eyebrow {
@@ -77,6 +79,9 @@
     line-height: var(--leading-none);
     letter-spacing: var(--tracking-normal);
     margin-bottom: var(--space-6);
+    word-break: break-word;
+    overflow-wrap: break-word;
+    hyphens: auto;
 }
 
 .hero__title .text-accent,
@@ -241,7 +246,7 @@
     .hero__content {
         grid-template-columns: 1fr;
         text-align: left;
-        gap: var(--space-12);
+        gap: var(--space-10);
     }
 
     .hero__eyebrow::before {
@@ -249,7 +254,11 @@
     }
 
     .hero__title {
-        font-size: var(--text-5xl);
+        font-size: clamp(2.5rem, 8vw, 3rem);
+    }
+
+    .hero__image {
+        order: -1;
     }
 
     .hero__image-wrapper {
@@ -260,23 +269,33 @@
 }
 
 @media (max-width: 768px) {
+    .hero {
+        min-height: auto;
+        padding-bottom: var(--space-12);
+    }
+
     .hero__container {
         padding: var(--space-6);
-        padding-top: calc(var(--space-20) + 60px);
+        padding-top: calc(var(--space-16) + 60px);
+    }
+
+    .hero__content {
+        gap: var(--space-8);
     }
 
     .hero__title {
-        font-size: var(--text-4xl);
+        font-size: clamp(2rem, 7vw, 2.5rem);
     }
 
     .hero__description {
         font-size: var(--text-base);
         max-width: 100%;
+        margin-bottom: var(--space-8);
     }
 
     .hero__image-wrapper {
-        width: 240px;
-        height: 300px;
+        width: 220px;
+        height: 275px;
     }
 
     .hero__scroll-indicator {
@@ -284,63 +303,97 @@
     }
 
     .works-section .section__title {
-        font-size: var(--text-5xl);
+        font-size: var(--text-4xl);
+    }
+
+    .works-section__cta {
+        margin-top: var(--space-8);
     }
 }
 
 @media (max-width: 480px) {
     .hero__container {
         padding: var(--space-4);
-        padding-top: calc(var(--space-16) + 60px);
+        padding-top: calc(var(--space-12) + 60px);
+    }
+
+    .hero__content {
+        gap: var(--space-6);
     }
 
     .hero__title {
-        font-size: var(--text-3xl);
-        word-break: break-word;
+        font-size: clamp(1.5rem, 8vw, 2rem);
+        line-height: 1.1;
     }
 
     .hero__eyebrow {
         font-size: 0.65rem;
+        margin-bottom: var(--space-2);
     }
 
     .hero__description {
         font-size: var(--text-sm);
-        margin-bottom: var(--space-8);
+        margin-bottom: var(--space-6);
+        line-height: var(--leading-normal);
     }
 
     .hero__cta {
         flex-direction: column;
         width: 100%;
+        gap: var(--space-3);
     }
 
     .hero__cta .btn {
         width: 100%;
-    }
-
-    .hero__image-wrapper {
-        width: 200px;
-        height: 250px;
-    }
-
-    .hero__image-wrapper::before {
-        top: -6px;
-        left: -6px;
-        right: 6px;
-        bottom: 6px;
-    }
-
-    .works-section .section__title {
-        font-size: var(--text-4xl);
-    }
-}
-
-@media (max-width: 360px) {
-    .hero__title {
-        font-size: var(--text-2xl);
+        padding: var(--space-3) var(--space-4);
     }
 
     .hero__image-wrapper {
         width: 180px;
-        height: 220px;
+        height: 225px;
+    }
+
+    .hero__image-wrapper::before {
+        top: -5px;
+        left: -5px;
+        right: 5px;
+        bottom: 5px;
+        border-width: 1px;
+    }
+
+    .works-section .section__title {
+        font-size: var(--text-3xl);
+    }
+
+    .works-empty {
+        padding: var(--space-10) var(--space-4);
+    }
+}
+
+@media (max-width: 360px) {
+    .hero__container {
+        padding: var(--space-3);
+        padding-top: calc(var(--space-10) + 50px);
+    }
+
+    .hero__title {
+        font-size: clamp(1.25rem, 7vw, 1.5rem);
+    }
+
+    .hero__description {
+        font-size: 0.8rem;
+    }
+
+    .hero__image-wrapper {
+        width: 160px;
+        height: 200px;
+    }
+
+    .hero__eyebrow {
+        font-size: 0.6rem;
+    }
+
+    .works-section .section__title {
+        font-size: var(--text-2xl);
     }
 }

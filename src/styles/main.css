@@ -662,8 +662,26 @@ ol {
         gap: var(--space-3);
     }
 
+    /* Make work card titles permanently visible on mobile */
+    .work-card__overlay {
+        opacity: 1;
+    }
+
     .work-card__title {
         font-size: var(--text-xl);
+        transform: translateY(0);
+    }
+
+    .work-card__meta {
+        transform: translateY(0);
+    }
+
+    .work-card__roles {
+        transform: translateY(0);
+    }
+
+    .work-card__image {
+        filter: grayscale(20%);
     }
 
     .footer__container {

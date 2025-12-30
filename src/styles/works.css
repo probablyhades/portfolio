@@ -145,7 +145,7 @@
     }
 
     .filter-section {
-        top: 50px;
+        position: static;
         padding: var(--space-6) var(--space-6) var(--space-8);
     }
 
@@ -199,7 +199,7 @@
     }
 
     .filter-section {
-        top: 45px;
+        position: static;
         padding: var(--space-4) var(--space-4) var(--space-6);
     }
 
