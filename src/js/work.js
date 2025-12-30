@@ -8,6 +8,8 @@ import {
     filterPublishedWorks,
     getWorkById,
     getWorkDescription,
+    getWorkChallenge,
+    getWorkResult,
     getWorkImages,
     getWorkVideo,
     getYouTubeEmbedUrl,
@@ -149,6 +151,32 @@ function renderHeader(work) {
 }
 
 /**
+ * Convert basic markdown (bold, italic) to HTML
+ * @param {string} text - Text with markdown formatting
+ * @returns {string} HTML string with formatting applied
+ */
+function markdownToHtml(text) {
+    if (!text) return '';
+
+    // Escape HTML entities first to prevent XSS
+    let html = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;');
+
+    // Convert markdown formatting (order matters: bold+italic first)
+    html = html
+        .replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>')  // ***bold italic***
+        .replace(/___(.+?)___/g, '<strong><em>$1</em></strong>')        // ___bold italic___
+        .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')               // **bold**
+        .replace(/__(.+?)__/g, '<strong>$1</strong>')                   // __bold__
+        .replace(/\*(.+?)\*/g, '<em>$1</em>')                           // *italic*
+        .replace(/_(.+?)_/g, '<em>$1</em>');                            // _italic_
+
+    return html;
+}
+
+/**
  * Render work description
  * @param {Object} work - Work data
  */
@@ -156,9 +184,47 @@ function renderDescription(work) {
     const description = getWorkDescription(work);
 
     if (description) {
-        workDescriptionText.textContent = description;
+        workDescriptionText.innerHTML = markdownToHtml(description);
     } else {
         workDescriptionSection.style.display = 'none';
+    }
+}
+
+/**
+ * Render challenge section
+ * @param {Object} work - Work data
+ */
+function renderChallenge(work) {
+    const challenge = getWorkChallenge(work);
+    const challengeSection = document.getElementById('work-challenge');
+    const challengeText = document.getElementById('work-challenge-text');
+
+    if (!challengeSection) return;
+
+    if (challenge) {
+        challengeText.innerHTML = markdownToHtml(challenge);
+        challengeSection.style.display = 'block';
+    } else {
+        challengeSection.style.display = 'none';
+    }
+}
+
+/**
+ * Render result section
+ * @param {Object} work - Work data
+ */
+function renderResult(work) {
+    const result = getWorkResult(work);
+    const resultSection = document.getElementById('work-result');
+    const resultText = document.getElementById('work-result-text');
+
+    if (!resultSection) return;
+
+    if (result) {
+        resultText.innerHTML = markdownToHtml(result);
+        resultSection.style.display = 'block';
+    } else {
+        resultSection.style.display = 'none';
     }
 }
 
@@ -362,6 +428,8 @@ async function loadWork() {
         renderHero(work);
         renderHeader(work);
         renderDescription(work);
+        renderChallenge(work);
+        renderResult(work);
         renderCredits(work);
         renderTestimonials(work);
         renderGallery(work);

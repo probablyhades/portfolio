@@ -81,17 +81,31 @@ export function getWorkById(works, id) {
 }
 
 /**
- * Extract description from work content
- * Looks for callout blocks with description text
+ * Helper to extract callout content under a specific heading
  * @param {Object} work - Work item
- * @returns {string} Description text
+ * @param {RegExp} headingPattern - Pattern to match the heading
+ * @returns {string} Callout text content or empty string
  */
-export function getWorkDescription(work) {
+function getCalloutUnderHeading(work, headingPattern) {
   if (!work.content) return '';
 
+  let inSection = false;
+
   for (const block of work.content) {
-    if (block.type === 'text' && block.decorations?.includes('callout')) {
-      // Extract text from callout markdown, removing the callout tags
+    // Check for heading match
+    if (block.type === 'text' && block.markdown) {
+      if (block.markdown.match(headingPattern)) {
+        inSection = true;
+        continue;
+      }
+      // Stop at next heading
+      if (inSection && block.markdown.match(/^#\s+/)) {
+        break;
+      }
+    }
+
+    // Look for callout in section
+    if (inSection && block.type === 'text' && block.decorations?.includes('callout')) {
       let text = block.markdown || '';
       text = text.replace(/<callout>|<\/callout>/g, '');
       return text.trim();
@@ -99,6 +113,51 @@ export function getWorkDescription(work) {
   }
   return '';
 }
+
+/**
+ * Extract description from work content
+ * Looks for callout blocks under "About this Work" or first callout
+ * @param {Object} work - Work item
+ * @returns {string} Description text
+ */
+export function getWorkDescription(work) {
+  // First try to find callout under "About this Work" heading
+  const aboutContent = getCalloutUnderHeading(work, /^#\s*(About\s*(this\s*)?Work)/i);
+  if (aboutContent) return aboutContent;
+
+  // Fallback: return first callout that's not under Challenge/Result
+  if (!work.content) return '';
+
+  for (const block of work.content) {
+    if (block.type === 'text' && block.decorations?.includes('callout')) {
+      let text = block.markdown || '';
+      text = text.replace(/<callout>|<\/callout>/g, '');
+      return text.trim();
+    }
+  }
+  return '';
+}
+
+/**
+ * Extract challenge section from work content
+ * Looks for callout blocks under "Challenge" heading
+ * @param {Object} work - Work item
+ * @returns {string} Challenge text
+ */
+export function getWorkChallenge(work) {
+  return getCalloutUnderHeading(work, /^#\s*Challenge/i);
+}
+
+/**
+ * Extract result section from work content
+ * Looks for callout blocks under "Result" heading
+ * @param {Object} work - Work item
+ * @returns {string} Result text
+ */
+export function getWorkResult(work) {
+  return getCalloutUnderHeading(work, /^#\s*Result/i);
+}
+
 
 /**
  * Extract images from work content
@@ -372,7 +431,7 @@ export function getWorkTestimonials(work) {
       const text = block.markdown.trim();
       if (!text || text.match(/^#+/)) continue; // Skip empty or heading lines
 
-      // Extract highlights (text wrapped in == or <mark>)
+      // Extract highlights (text wrapped in == or <highlight>)
       const highlights = [];
       let processedText = text;
 
@@ -382,6 +441,13 @@ export function getWorkTestimonials(work) {
         highlights.push(match[1].trim());
       }
       processedText = processedText.replace(/==([^=]+)==/g, '$1');
+
+      // Find <highlight color="...">text</highlight> tags (Craft format)
+      const craftHighlightMatches = text.matchAll(/<highlight[^>]*>([^<]+)<\/highlight>/g);
+      for (const match of craftHighlightMatches) {
+        highlights.push(match[1].trim());
+      }
+      processedText = processedText.replace(/<highlight[^>]*>([^<]+)<\/highlight>/g, '$1');
 
       // Try to parse "Quote text" — Name format (quote and author on same line)
       const quoteAuthorMatch = processedText.match(/^[">]?\s*["""]?(.+?)["""]?\s*[—–-]\s*(.+)$/s);

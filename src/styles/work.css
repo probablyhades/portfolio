@@ -205,6 +205,60 @@
     color: var(--color-text-secondary);
 }
 
+/* Work Challenge */
+.work-challenge {
+    padding: var(--space-12) var(--space-8);
+    background: var(--color-bg-primary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.work-challenge__container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+}
+
+.work-challenge__heading {
+    font-family: var(--font-extended);
+    font-size: var(--text-3xl);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--space-6);
+    color: var(--color-accent);
+}
+
+.work-challenge__text {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+}
+
+/* Work Result */
+.work-result {
+    padding: var(--space-12) var(--space-8);
+    background: var(--color-bg-secondary);
+    border-bottom: 1px solid var(--color-border);
+}
+
+.work-result__container {
+    max-width: var(--max-width-content);
+    margin: 0 auto;
+}
+
+.work-result__heading {
+    font-family: var(--font-extended);
+    font-size: var(--text-3xl);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--space-6);
+    color: var(--color-accent);
+}
+
+.work-result__text {
+    font-size: var(--text-lg);
+    line-height: var(--leading-relaxed);
+    color: var(--color-text-secondary);
+}
+
 /* Work Gallery */
 .work-gallery {
     padding: var(--space-16) var(--space-8);
