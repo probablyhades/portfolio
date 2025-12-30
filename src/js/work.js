@@ -10,7 +10,11 @@ import {
     getWorkDescription,
     getWorkImages,
     getWorkVideo,
-    getYouTubeEmbedUrl
+    getYouTubeEmbedUrl,
+    getWorkCoverImage,
+    getWorkVideoUrl,
+    getWorkOtherCredits,
+    getWorkTestimonials
 } from './api.js';
 
 // DOM Elements
@@ -52,11 +56,13 @@ function updatePageMeta(work) {
 }
 
 /**
- * Render hero section with video or image
+ * Render hero section with video (prioritized) or cover image
  * @param {Object} work - Work data
  */
 function renderHero(work) {
-    const videoUrl = getWorkVideo(work);
+    // Prioritize video from properties, then fall back to content-based video
+    const videoUrl = getWorkVideoUrl(work);
+    const coverImage = getWorkCoverImage(work);
     const images = getWorkImages(work);
 
     if (videoUrl) {
@@ -74,10 +80,11 @@ function renderHero(work) {
         }
     }
 
-    // Fallback to first image
-    if (images.length > 0) {
+    // Fallback to cover image or first gallery image
+    const heroImage = coverImage || (images.length > 0 ? images[0] : null);
+    if (heroImage) {
         workHeroMedia.innerHTML = `
-      <img src="${images[0]}" alt="${work.production || work.title}" loading="eager">
+      <img src="${heroImage}" alt="${work.production || work.title}" loading="eager">
     `;
     } else {
         // No media - hide hero or show placeholder
@@ -156,18 +163,30 @@ function renderDescription(work) {
 }
 
 /**
- * Render image gallery
+ * Render image gallery (includes cover image first)
  * @param {Object} work - Work data
  */
 function renderGallery(work) {
-    const images = getWorkImages(work);
+    const coverImage = getWorkCoverImage(work);
+    const galleryImages = getWorkImages(work);
 
-    if (images.length === 0) {
+    // Combine cover image + gallery images, avoiding duplicates
+    const allImages = [];
+    if (coverImage) {
+        allImages.push(coverImage);
+    }
+    for (const img of galleryImages) {
+        if (!allImages.includes(img)) {
+            allImages.push(img);
+        }
+    }
+
+    if (allImages.length === 0) {
         workGallery.style.display = 'none';
         return;
     }
 
-    workGalleryGrid.innerHTML = images
+    workGalleryGrid.innerHTML = allImages
         .map((url, index) => `
       <img 
         src="${url}" 
@@ -180,7 +199,7 @@ function renderGallery(work) {
         .join('');
 
     // Add lightbox functionality
-    initLightbox(images);
+    initLightbox(allImages);
 }
 
 /**
@@ -241,6 +260,78 @@ function showError() {
 }
 
 /**
+ * Render other credits section
+ * @param {Object} work - Work data
+ */
+function renderCredits(work) {
+    console.log('renderCredits called, work.content:', work.content);
+    const credits = getWorkOtherCredits(work);
+    console.log('Credits found:', credits);
+    const creditsSection = document.getElementById('work-credits');
+
+    if (!creditsSection || credits.length === 0) {
+        console.log('No credits section element or empty credits');
+        if (creditsSection) creditsSection.style.display = 'none';
+        return;
+    }
+
+    const creditsGrid = document.getElementById('work-credits-grid');
+    creditsGrid.innerHTML = credits
+        .map(credit => {
+            const nameHtml = credit.link
+                ? `<a href="${credit.link}" class="work-credits__link" target="_blank" rel="noopener">${credit.name}</a>`
+                : `<span class="work-credits__name">${credit.name}</span>`;
+            return `
+                <div class="work-credits__item">
+                    ${nameHtml}
+                    <span class="work-credits__role">${credit.role}</span>
+                </div>
+            `;
+        })
+        .join('');
+
+    creditsSection.style.display = 'block';
+}
+
+/**
+ * Render testimonials section with highlights
+ * @param {Object} work - Work data
+ */
+function renderTestimonials(work) {
+    const testimonials = getWorkTestimonials(work);
+    const testimonialsSection = document.getElementById('work-testimonials');
+
+    if (!testimonialsSection || testimonials.length === 0) {
+        if (testimonialsSection) testimonialsSection.style.display = 'none';
+        return;
+    }
+
+    const testimonialsGrid = document.getElementById('work-testimonials-grid');
+    testimonialsGrid.innerHTML = testimonials
+        .map(testimonial => {
+            // Apply highlight markup to the quote
+            let quoteHtml = testimonial.quote;
+            for (const highlight of testimonial.highlights) {
+                quoteHtml = quoteHtml.replace(
+                    highlight,
+                    `<mark class="testimonial__highlight">${highlight}</mark>`
+                );
+            }
+
+            return `
+                <blockquote class="testimonial">
+                    <p class="testimonial__quote">"${quoteHtml}"</p>
+                    ${testimonial.name ? `<cite class="testimonial__author">— ${testimonial.name}</cite>` : ''}
+                </blockquote>
+            `;
+        })
+        .join('');
+
+
+    testimonialsSection.style.display = 'block';
+}
+
+/**
  * Load and render work
  */
 async function loadWork() {
@@ -271,6 +362,8 @@ async function loadWork() {
         renderHero(work);
         renderHeader(work);
         renderDescription(work);
+        renderCredits(work);
+        renderTestimonials(work);
         renderGallery(work);
 
         // Show page, hide loading

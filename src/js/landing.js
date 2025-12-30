@@ -7,7 +7,8 @@ import {
     fetchWorks,
     filterPublishedWorks,
     getLatestWorks,
-    getWorkImages
+    getWorkImages,
+    getWorkCoverImage
 } from './api.js';
 
 // DOM Elements
@@ -24,9 +25,10 @@ function createWorkCard(work) {
     card.href = `work.html?id=${work.id}`;
     card.className = 'work-card';
 
-    // Get first image or use placeholder
-    const images = getWorkImages(work);
-    const imageUrl = images[0] || 'assets/images/placeholder.jpg';
+    // Get cover image or fallback to first gallery image
+    const coverImage = getWorkCoverImage(work);
+    const galleryImages = getWorkImages(work);
+    const imageUrl = coverImage || galleryImages[0] || 'assets/images/placeholder.jpg';
 
     // Get work title - use 'production' field from API or fallback to title
     const title = work.production || work.title || 'Untitled Work';
