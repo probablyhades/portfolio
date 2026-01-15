@@ -16,7 +16,8 @@ import {
     getWorkCoverImage,
     getWorkVideoUrl,
     getWorkOtherCredits,
-    getWorkTestimonials
+    getWorkTestimonials,
+    getWorkBlogUrl
 } from './api.js';
 
 // DOM Elements
@@ -229,6 +230,25 @@ function renderResult(work) {
 }
 
 /**
+ * Render blog link section
+ * @param {Object} work - Work data
+ */
+function renderBlog(work) {
+    const blogUrl = getWorkBlogUrl(work);
+    const blogSection = document.getElementById('work-blog');
+
+    if (!blogSection) return;
+
+    if (blogUrl) {
+        const blogLink = document.getElementById('work-blog-link');
+        blogLink.href = blogUrl;
+        blogSection.style.display = 'block';
+    } else {
+        blogSection.style.display = 'none';
+    }
+}
+
+/**
  * Render image gallery (includes cover image first)
  * @param {Object} work - Work data
  */
@@ -430,6 +450,7 @@ async function loadWork() {
         renderDescription(work);
         renderChallenge(work);
         renderResult(work);
+        renderBlog(work);
         renderCredits(work);
         renderTestimonials(work);
         renderGallery(work);

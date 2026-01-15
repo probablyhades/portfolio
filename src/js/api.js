@@ -273,6 +273,20 @@ export function getWorkVideoUrl(work) {
 }
 
 /**
+ * Get blog URL from work properties
+ * @param {Object} work - Work item
+ * @returns {string|null} Blog URL or null
+ */
+export function getWorkBlogUrl(work) {
+  const blogUrl = work.properties?.blog;
+  if (blogUrl) {
+    if (typeof blogUrl === 'string') return blogUrl;
+    if (blogUrl.url) return blogUrl.url;
+  }
+  return null;
+}
+
+/**
  * Get other credits from work content
  * Looks for credits table with Name, Role, and Link columns
  * @param {Object} work - Work item
