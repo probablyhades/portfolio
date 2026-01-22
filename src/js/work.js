@@ -241,7 +241,9 @@ function renderBlog(work) {
 
     if (blogUrl) {
         const blogLink = document.getElementById('work-blog-link');
-        blogLink.href = blogUrl;
+        if (blogLink) {
+            blogLink.href = blogUrl;
+        }
         blogSection.style.display = 'block';
     } else {
         blogSection.style.display = 'none';
