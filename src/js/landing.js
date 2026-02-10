@@ -76,7 +76,7 @@ function renderSkeletons(count) {
 async function loadRecentWorks() {
     try {
         // Show loading state
-        renderSkeletons(4);
+        renderSkeletons(3);
 
         // Fetch works from API
         const allWorks = await fetchWorks();
@@ -85,7 +85,7 @@ async function loadRecentWorks() {
         const publishedWorks = filterPublishedWorks(allWorks);
 
         // Get latest 4
-        const recentWorks = getLatestWorks(publishedWorks, 4);
+        const recentWorks = getLatestWorks(publishedWorks, 3);
 
         // Clear loading state
         worksGrid.innerHTML = '';
