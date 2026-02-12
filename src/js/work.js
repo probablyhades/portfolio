@@ -298,6 +298,7 @@ function renderGallery(work) {
  */
 function initLightbox(images) {
     let currentIndex = 0;
+    let isTransitioning = false;
 
     // Create lightbox element
     const lightbox = document.createElement('div');
@@ -310,17 +311,17 @@ function initLightbox(images) {
       </svg>
     </button>
     <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous image">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
     </button>
+    <img src="" alt="" class="lightbox__image">
     <button class="lightbox__nav lightbox__nav--next" aria-label="Next image">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"></polyline>
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 6 15 12 9 18"></polyline>
       </svg>
     </button>
-    <img src="" alt="" class="lightbox__image">
-    <span class="lightbox__counter"></span>
+    <div class="lightbox__counter"></div>
   `;
     document.body.appendChild(lightbox);
 
@@ -330,23 +331,60 @@ function initLightbox(images) {
     const nextBtn = lightbox.querySelector('.lightbox__nav--next');
     const counter = lightbox.querySelector('.lightbox__counter');
 
-    function showImage(index) {
-        currentIndex = (index + images.length) % images.length;
+    /**
+     * Show an image immediately (no transition), used on first open
+     */
+    function showImageDirect(index) {
+        currentIndex = index;
         lightboxImage.src = images[currentIndex];
         lightboxImage.alt = `Gallery image ${currentIndex + 1}`;
         counter.textContent = `${currentIndex + 1} / ${images.length}`;
-        // Toggle nav visibility for single-image galleries
-        const hasMultiple = images.length > 1;
-        prevBtn.style.display = hasMultiple ? 'flex' : 'none';
-        nextBtn.style.display = hasMultiple ? 'flex' : 'none';
-        counter.style.display = hasMultiple ? 'block' : 'none';
+        lightboxImage.classList.remove('lightbox__image--fade-out');
+
+        // Hide nav buttons if only one image
+        prevBtn.style.display = images.length <= 1 ? 'none' : '';
+        nextBtn.style.display = images.length <= 1 ? 'none' : '';
+        counter.style.display = images.length <= 1 ? 'none' : '';
+    }
+
+    /**
+     * Transition to a new image with a fade animation
+     */
+    function transitionToImage(index) {
+        if (isTransitioning || index === currentIndex) return;
+        isTransitioning = true;
+
+        // Fade out
+        lightboxImage.classList.add('lightbox__image--fade-out');
+
+        setTimeout(() => {
+            // Swap image while faded out
+            currentIndex = index;
+            lightboxImage.src = images[currentIndex];
+            lightboxImage.alt = `Gallery image ${currentIndex + 1}`;
+            counter.textContent = `${currentIndex + 1} / ${images.length}`;
+
+            // Fade back in
+            lightboxImage.classList.remove('lightbox__image--fade-out');
+            setTimeout(() => {
+                isTransitioning = false;
+            }, 70);
+        }, 70);
+    }
+
+    function showPrev() {
+        transitionToImage((currentIndex - 1 + images.length) % images.length);
+    }
+
+    function showNext() {
+        transitionToImage((currentIndex + 1) % images.length);
     }
 
     // Open lightbox on image click
     workGalleryGrid.addEventListener('click', (e) => {
         if (e.target.classList.contains('work-gallery__image')) {
             const index = parseInt(e.target.dataset.index);
-            showImage(index);
+            showImageDirect(index);
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -369,15 +407,27 @@ function initLightbox(images) {
         document.body.style.overflow = '';
     }
 
+    // Navigation click handlers
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showPrev();
+    });
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNext();
+    });
+
     closeBtn.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
     });
+
+    // Keyboard navigation
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
         if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
-        if (e.key === 'ArrowRight') showImage(currentIndex + 1);
+        if (e.key === 'ArrowLeft') showPrev();
+        if (e.key === 'ArrowRight') showNext();
     });
 }
 
