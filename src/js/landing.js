@@ -138,11 +138,11 @@ function handleScroll() {
  * Initialize intersection observer for scroll animations
  */
 function initScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
+    const staggerObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate');
-                observer.unobserve(entry.target);
+                staggerObserver.unobserve(entry.target);
             }
         });
     }, {
@@ -152,7 +152,26 @@ function initScrollAnimations() {
 
     // Observe elements with stagger class
     document.querySelectorAll('.stagger').forEach(el => {
-        observer.observe(el);
+        staggerObserver.observe(el);
+    });
+
+    // Scroll reveal observer for sections
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.15,
+        rootMargin: '0px 0px -40px 0px'
+    });
+
+    // Add reveal class to sections and observe them
+    document.querySelectorAll('.section__header, .showreel, .works-section__cta').forEach(el => {
+        el.classList.add('reveal');
+        revealObserver.observe(el);
     });
 }
 

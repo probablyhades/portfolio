@@ -297,6 +297,8 @@ function renderGallery(work) {
  * @param {Array<string>} images - Image URLs
  */
 function initLightbox(images) {
+    let currentIndex = 0;
+
     // Create lightbox element
     const lightbox = document.createElement('div');
     lightbox.className = 'lightbox';
@@ -307,22 +309,58 @@ function initLightbox(images) {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
+    <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="15 18 9 12 15 6"></polyline>
+      </svg>
+    </button>
+    <button class="lightbox__nav lightbox__nav--next" aria-label="Next image">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 18 15 12 9 6"></polyline>
+      </svg>
+    </button>
     <img src="" alt="" class="lightbox__image">
+    <span class="lightbox__counter"></span>
   `;
     document.body.appendChild(lightbox);
 
     const lightboxImage = lightbox.querySelector('.lightbox__image');
     const closeBtn = lightbox.querySelector('.lightbox__close');
+    const prevBtn = lightbox.querySelector('.lightbox__nav--prev');
+    const nextBtn = lightbox.querySelector('.lightbox__nav--next');
+    const counter = lightbox.querySelector('.lightbox__counter');
+
+    function showImage(index) {
+        currentIndex = (index + images.length) % images.length;
+        lightboxImage.src = images[currentIndex];
+        lightboxImage.alt = `Gallery image ${currentIndex + 1}`;
+        counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        // Toggle nav visibility for single-image galleries
+        const hasMultiple = images.length > 1;
+        prevBtn.style.display = hasMultiple ? 'flex' : 'none';
+        nextBtn.style.display = hasMultiple ? 'flex' : 'none';
+        counter.style.display = hasMultiple ? 'block' : 'none';
+    }
 
     // Open lightbox on image click
     workGalleryGrid.addEventListener('click', (e) => {
         if (e.target.classList.contains('work-gallery__image')) {
             const index = parseInt(e.target.dataset.index);
-            lightboxImage.src = images[index];
-            lightboxImage.alt = `Gallery image ${index + 1}`;
+            showImage(index);
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
+    });
+
+    // Navigation
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex + 1);
     });
 
     // Close lightbox
@@ -336,7 +374,10 @@ function initLightbox(images) {
         if (e.target === lightbox) closeLightbox();
     });
     document.addEventListener('keydown', (e) => {
+        if (!lightbox.classList.contains('active')) return;
         if (e.key === 'Escape') closeLightbox();
+        if (e.key === 'ArrowLeft') showImage(currentIndex - 1);
+        if (e.key === 'ArrowRight') showImage(currentIndex + 1);
     });
 }
 
@@ -422,6 +463,38 @@ function renderTestimonials(work) {
 }
 
 /**
+ * Initialize scroll reveal animations for sections
+ */
+function initScrollReveal() {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    // Selectors for all major sections on the work detail page
+    const sections = [
+        '.work-description', '.work-challenge', '.work-result',
+        '.work-blog', '.work-credits', '.work-testimonials',
+        '.work-gallery', '.work-nav-section'
+    ];
+
+    sections.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el && el.style.display !== 'none') {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        }
+    });
+}
+
+/**
  * Load and render work
  */
 async function loadWork() {
@@ -462,6 +535,9 @@ async function loadWork() {
         // Show page, hide loading
         workLoading.style.display = 'none';
         workPage.style.display = 'block';
+
+        // Initialize scroll reveals after content is rendered
+        requestAnimationFrame(() => initScrollReveal());
 
     } catch (error) {
         console.error('Failed to load work:', error);
