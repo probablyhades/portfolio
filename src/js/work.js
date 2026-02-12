@@ -71,6 +71,8 @@ function renderHero(work) {
     if (videoUrl) {
         const embedUrl = getYouTubeEmbedUrl(videoUrl);
         if (embedUrl) {
+            // Add video modifier class for proper aspect-ratio layout
+            document.getElementById('work-hero').classList.add('work-hero--video');
             workHeroMedia.innerHTML = `
         <iframe 
           src="${embedUrl}?autoplay=0&rel=0&modestbranding=1" 
