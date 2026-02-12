@@ -890,88 +890,90 @@ ol {
    Custom Cursor
    ========================================== */
 
-/* Hide native cursor when custom cursor is active */
-.custom-cursor-active,
-.custom-cursor-active * {
+.has-custom-cursor,
+.has-custom-cursor a,
+.has-custom-cursor button,
+.has-custom-cursor .btn,
+.has-custom-cursor .work-card,
+.has-custom-cursor .work-gallery__image,
+.has-custom-cursor .filter-pill {
     cursor: none !important;
 }
 
-.cursor-dot,
+.cursor-dot {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 6px;
+    height: 6px;
+    background: #fff;
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 99999;
+    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
+    will-change: transform;
+}
+
 .cursor-ring {
     position: fixed;
     top: 0;
     left: 0;
+    width: 36px;
+    height: 36px;
+    border: 1.5px solid rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
     pointer-events: none;
-    z-index: 9999;
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    z-index: 99998;
+    mix-blend-mode: difference;
+    transform: translate(-50%, -50%);
+    transition: width 0.3s var(--ease-out-expo),
+        height 0.3s var(--ease-out-expo),
+        border-color 0.3s ease,
+        opacity 0.3s ease,
+        background 0.3s ease;
     will-change: transform;
 }
 
-.cursor-dot.cursor--visible,
-.cursor-ring.cursor--visible {
-    opacity: 1;
-}
-
-/* Dot — small precise pointer */
-.cursor-dot {
-    width: 6px;
-    height: 6px;
-    margin-left: -3px;
-    margin-top: -3px;
-    background: var(--color-accent);
-    border-radius: 50%;
-    z-index: 10000;
-}
-
-/* Ring — larger trailing circle */
-.cursor-ring {
-    width: 36px;
-    height: 36px;
-    margin-left: -18px;
-    margin-top: -18px;
-    border: 1.5px solid var(--color-accent);
-    border-radius: 50%;
-    transition: width 0.2s ease, height 0.2s ease,
-        margin 0.2s ease, border-color 0.2s ease,
-        background 0.2s ease, opacity 0.3s ease;
-}
-
-/* Hover state — ring expands, dot shrinks */
+/* Hover state — ring expands */
 .cursor-ring--hover {
-    width: 56px;
-    height: 56px;
-    margin-left: -28px;
-    margin-top: -28px;
-    border-color: var(--color-accent);
-    background: rgba(255, 85, 0, 0.08);
+    width: 54px;
+    height: 54px;
+    border-color: rgba(255, 85, 0, 0.6);
+    background: rgba(255, 85, 0, 0.06);
 }
 
 .cursor-dot--hover {
-    opacity: 0.5;
-    transform: scale(0.5);
+    width: 4px;
+    height: 4px;
+    background: var(--color-accent);
 }
 
-/* Press state */
-.cursor-ring--press {
+/* Click state — both shrink */
+.cursor-dot--clicking {
+    width: 4px;
+    height: 4px;
+}
+
+.cursor-ring--clicking {
     width: 28px;
     height: 28px;
-    margin-left: -14px;
-    margin-top: -14px;
-    border-width: 2px;
+    border-color: var(--color-accent);
 }
 
-.cursor-dot--press {
-    transform: scale(1.5);
-}
+/* Hide on mobile / touch */
+@media (pointer: coarse) {
 
-/* Text cursor — vertical bar hint */
-.cursor-ring--text {
-    width: 4px;
-    height: 32px;
-    margin-left: -2px;
-    margin-top: -16px;
-    border-radius: 2px;
-    border-color: var(--color-text-secondary);
-    background: rgba(255, 255, 255, 0.06);
+    .cursor-dot,
+    .cursor-ring {
+        display: none !important;
+    }
+
+    .has-custom-cursor,
+    .has-custom-cursor a,
+    .has-custom-cursor button,
+    .has-custom-cursor .btn {
+        cursor: auto !important;
+    }
 }

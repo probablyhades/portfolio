@@ -1,147 +1,141 @@
 /**
- * Custom Cursor
- * A dual-element cursor (dot + ring) that reacts to interactive elements.
- * Automatically disabled on touch devices.
+ * Custom Reactive Cursor
+ * Dot + Ring cursor that responds to interactive elements
+ * Auto-disables on touch devices
  */
 
-(function () {
-    // Skip on touch devices
-    if ('ontouchstart' in window || navigator.maxTouchPoints > 0) return;
+class CustomCursor {
+    constructor() {
+        // Skip on touch devices
+        if (this.isTouchDevice()) return;
 
-    // Create cursor elements
-    const dot = document.createElement('div');
-    dot.className = 'cursor-dot';
+        this.dot = null;
+        this.ring = null;
+        this.mouseX = 0;
+        this.mouseY = 0;
+        this.ringX = 0;
+        this.ringY = 0;
+        this.isHovering = false;
+        this.isClicking = false;
+        this.isHidden = false;
+        this.lerp = 0.15;
 
-    const ring = document.createElement('div');
-    ring.className = 'cursor-ring';
-
-    document.body.appendChild(dot);
-    document.body.appendChild(ring);
-
-    // Track mouse position
-    let mouseX = -100;
-    let mouseY = -100;
-    let ringX = -100;
-    let ringY = -100;
-    let isVisible = false;
-
-    // Smooth follow for the ring
-    function animate() {
-        ringX += (mouseX - ringX) * 0.15;
-        ringY += (mouseY - ringY) * 0.15;
-
-        dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
-        ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
-
-        requestAnimationFrame(animate);
+        this.init();
     }
-    animate();
 
-    // Update position on mouse move
-    document.addEventListener('mousemove', (e) => {
-        mouseX = e.clientX;
-        mouseY = e.clientY;
+    isTouchDevice() {
+        return (
+            'ontouchstart' in window ||
+            navigator.maxTouchPoints > 0 ||
+            window.matchMedia('(pointer: coarse)').matches
+        );
+    }
 
-        if (!isVisible) {
-            isVisible = true;
-            dot.classList.add('cursor--visible');
-            ring.classList.add('cursor--visible');
-        }
-    });
+    init() {
+        this.createElements();
+        this.bindEvents();
+        this.animate();
+        document.body.classList.add('has-custom-cursor');
+    }
 
-    // Hide when mouse leaves window
-    document.addEventListener('mouseleave', () => {
-        isVisible = false;
-        dot.classList.remove('cursor--visible');
-        ring.classList.remove('cursor--visible');
-    });
+    createElements() {
+        // Dot
+        this.dot = document.createElement('div');
+        this.dot.className = 'cursor-dot';
+        document.body.appendChild(this.dot);
 
-    document.addEventListener('mouseenter', () => {
-        isVisible = true;
-        dot.classList.add('cursor--visible');
-        ring.classList.add('cursor--visible');
-    });
+        // Ring
+        this.ring = document.createElement('div');
+        this.ring.className = 'cursor-ring';
+        document.body.appendChild(this.ring);
+    }
 
-    // --- Element reactions ---
+    bindEvents() {
+        document.addEventListener('mousemove', (e) => {
+            this.mouseX = e.clientX;
+            this.mouseY = e.clientY;
 
-    // Selectors for interactive elements
-    const hoverSelectors = 'a, button, .btn, .work-card, .filter-pill, .work-gallery__image, .lightbox__nav, .lightbox__close, input, textarea, select';
-
-    // Use event delegation for hover states
-    document.addEventListener('mouseover', (e) => {
-        const target = e.target.closest(hoverSelectors);
-        if (target) {
-            ring.classList.add('cursor-ring--hover');
-            dot.classList.add('cursor-dot--hover');
-        }
-    });
-
-    document.addEventListener('mouseout', (e) => {
-        const target = e.target.closest(hoverSelectors);
-        if (target) {
-            ring.classList.remove('cursor-ring--hover');
-            dot.classList.remove('cursor-dot--hover');
-        }
-    });
-
-    // Mousedown/up press effect
-    document.addEventListener('mousedown', () => {
-        ring.classList.add('cursor-ring--press');
-        dot.classList.add('cursor-dot--press');
-    });
-
-    document.addEventListener('mouseup', () => {
-        ring.classList.remove('cursor-ring--press');
-        dot.classList.remove('cursor-dot--press');
-    });
-
-    // Text cursor detection
-    const textSelectors = 'p, h1, h2, h3, h4, h5, h6, span, li, blockquote, cite, label';
-
-    document.addEventListener('mouseover', (e) => {
-        // Only trigger for text elements that are NOT also interactive
-        if (e.target.matches(textSelectors) && !e.target.closest(hoverSelectors)) {
-            ring.classList.add('cursor-ring--text');
-        }
-    });
-
-    document.addEventListener('mouseout', (e) => {
-        if (e.target.matches(textSelectors)) {
-            ring.classList.remove('cursor-ring--text');
-        }
-    });
-
-    // Hide custom cursor when inside iframes (YouTube embeds, etc.)
-    document.querySelectorAll('iframe').forEach(iframe => {
-        iframe.addEventListener('mouseenter', () => {
-            dot.classList.remove('cursor--visible');
-            ring.classList.remove('cursor--visible');
+            // Show cursor on first move
+            if (this.isHidden) {
+                this.dot.style.opacity = '1';
+                this.ring.style.opacity = '1';
+                this.isHidden = false;
+            }
         });
-        iframe.addEventListener('mouseleave', () => {
-            dot.classList.add('cursor--visible');
-            ring.classList.add('cursor--visible');
-        });
-    });
 
-    // Also handle dynamically added iframes
-    const observer = new MutationObserver((mutations) => {
-        mutations.forEach(mutation => {
-            mutation.addedNodes.forEach(node => {
-                if (node.nodeName === 'IFRAME') {
-                    node.addEventListener('mouseenter', () => {
-                        dot.classList.remove('cursor--visible');
-                        ring.classList.remove('cursor--visible');
-                    });
-                    node.addEventListener('mouseleave', () => {
-                        dot.classList.add('cursor--visible');
-                        ring.classList.add('cursor--visible');
-                    });
+        document.addEventListener('mousedown', () => {
+            this.isClicking = true;
+            this.dot.classList.add('cursor-dot--clicking');
+            this.ring.classList.add('cursor-ring--clicking');
+        });
+
+        document.addEventListener('mouseup', () => {
+            this.isClicking = false;
+            this.dot.classList.remove('cursor-dot--clicking');
+            this.ring.classList.remove('cursor-ring--clicking');
+        });
+
+        document.addEventListener('mouseleave', () => {
+            this.dot.style.opacity = '0';
+            this.ring.style.opacity = '0';
+            this.isHidden = true;
+        });
+
+        document.addEventListener('mouseenter', () => {
+            this.dot.style.opacity = '1';
+            this.ring.style.opacity = '1';
+            this.isHidden = false;
+        });
+
+        // Delegate hover detection
+        this.setupHoverDetection();
+    }
+
+    setupHoverDetection() {
+        const interactiveSelectors = [
+            'a', 'button', '.btn', '.work-card',
+            '.work-gallery__image', '.filter-pill',
+            '.lightbox__nav', '.lightbox__close',
+            'iframe'
+        ];
+
+        document.addEventListener('mouseover', (e) => {
+            const target = e.target.closest(interactiveSelectors.join(','));
+            if (target) {
+                this.ring.classList.add('cursor-ring--hover');
+                this.dot.classList.add('cursor-dot--hover');
+            }
+        });
+
+        document.addEventListener('mouseout', (e) => {
+            const target = e.target.closest(interactiveSelectors.join(','));
+            if (target) {
+                // Only remove if we're not entering another interactive element
+                const relatedTarget = e.relatedTarget?.closest?.(interactiveSelectors.join(','));
+                if (!relatedTarget) {
+                    this.ring.classList.remove('cursor-ring--hover');
+                    this.dot.classList.remove('cursor-dot--hover');
                 }
-            });
+            }
         });
-    });
-    observer.observe(document.body, { childList: true, subtree: true });
+    }
 
-    // Hide native cursor site-wide
-    document.documentElement.classList.add('custom-cursor-active');
-})();
+    animate() {
+        // Lerp ring position towards mouse
+        this.ringX += (this.mouseX - this.ringX) * this.lerp;
+        this.ringY += (this.mouseY - this.ringY) * this.lerp;
+
+        // Dot follows exactly
+        this.dot.style.transform = `translate(${this.mouseX}px, ${this.mouseY}px)`;
+        this.ring.style.transform = `translate(${this.ringX}px, ${this.ringY}px)`;
+
+        requestAnimationFrame(() => this.animate());
+    }
+}
+
+// Initialize on load
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => new CustomCursor());
+} else {
+    new CustomCursor();
+}

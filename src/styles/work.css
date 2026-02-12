@@ -464,10 +464,10 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    background: transparent;
-    border: 2px solid rgba(255, 255, 255, 0.3);
+    width: 56px;
+    height: 56px;
+    background: rgba(255, 255, 255, 0.08);
+    border: 2px solid rgba(255, 255, 255, 0.35);
     color: var(--color-text-primary);
     display: flex;
     align-items: center;
@@ -475,11 +475,29 @@
     cursor: pointer;
     transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s var(--ease-out-expo);
     z-index: 10;
+    animation: arrowPulse 1.5s ease 0.5s 2;
+}
+
+@keyframes arrowPulse {
+
+    0%,
+    100% {
+        box-shadow: 0 0 0 0 rgba(255, 85, 0, 0);
+    }
+
+    50% {
+        box-shadow: 0 0 20px 4px rgba(255, 85, 0, 0.25);
+    }
+}
+
+.lightbox__nav svg {
+    width: 28px;
+    height: 28px;
 }
 
 .lightbox__nav:hover {
     border-color: var(--color-accent);
-    background: rgba(255, 85, 0, 0.1);
+    background: rgba(255, 85, 0, 0.15);
 }
 
 .lightbox__nav--prev {
@@ -487,7 +505,7 @@
 }
 
 .lightbox__nav--prev:hover {
-    transform: translateY(-50%) translateX(-2px);
+    transform: translateY(-50%) translateX(-3px);
 }
 
 .lightbox__nav--next {
@@ -495,7 +513,7 @@
 }
 
 .lightbox__nav--next:hover {
-    transform: translateY(-50%) translateX(2px);
+    transform: translateY(-50%) translateX(3px);
 }
 
 .lightbox__counter {
@@ -508,6 +526,12 @@
     color: var(--color-text-muted);
     text-transform: uppercase;
     letter-spacing: var(--tracking-wide);
+}
+
+/* Lightbox image crossfade transition */
+.lightbox__image.lightbox__image--switching {
+    opacity: 0;
+    transform: scale(0.96);
 }
 
 /* Work Navigation Section */
