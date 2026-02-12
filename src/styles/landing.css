@@ -206,7 +206,7 @@
     width: 2px;
     height: 50px;
     background: var(--color-accent);
-    transform-origin: top;
+    transform-origin: center;
     animation: scrollPulse 2s var(--ease-in-out-smooth, ease-in-out) infinite;
 }
 
@@ -222,16 +222,6 @@
         transform: scaleY(0.4);
         opacity: 0.3;
     }
-}
-
-.hero__scroll-indicator::after {
-    content: '';
-    width: 10px;
-    height: 10px;
-    border-right: 2px solid var(--color-accent);
-    border-bottom: 2px solid var(--color-accent);
-    transform: rotate(45deg);
-    animation: scrollBounce 2s var(--ease-in-out-smooth, ease-in-out) infinite;
 }
 
 @keyframes scrollBounce {

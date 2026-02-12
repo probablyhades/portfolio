@@ -390,16 +390,6 @@ function initLightbox(images) {
         }
     });
 
-    // Navigation
-    prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showImage(currentIndex - 1);
-    });
-
-    nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showImage(currentIndex + 1);
-    });
 
     // Close lightbox
     function closeLightbox() {
@@ -529,10 +519,12 @@ function initScrollReveal() {
     });
 
     // Selectors for all major sections on the work detail page
+    // NOTE: .work-gallery is excluded — adding a CSS transform to it
+    // breaks the lightbox's position:fixed (transforms create a new containing block)
     const sections = [
         '.work-description', '.work-challenge', '.work-result',
         '.work-blog', '.work-credits', '.work-testimonials',
-        '.work-gallery', '.work-nav-section'
+        '.work-nav-section'
     ];
 
     sections.forEach(selector => {

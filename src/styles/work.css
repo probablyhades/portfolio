@@ -433,6 +433,11 @@
     opacity: 1;
 }
 
+.lightbox__image--fade-out {
+    opacity: 0 !important;
+    transform: scale(0.97) !important;
+}
+
 .lightbox__close {
     position: absolute;
     top: var(--space-6);
