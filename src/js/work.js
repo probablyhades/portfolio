@@ -390,6 +390,17 @@ function initLightbox(images) {
         }
     });
 
+    // Navigation
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex + 1);
+    });
+
     // Close lightbox
     function closeLightbox() {
         lightbox.classList.remove('active');
@@ -502,6 +513,38 @@ function renderTestimonials(work) {
 }
 
 /**
+ * Initialize scroll reveal animations for sections
+ */
+function initScrollReveal() {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    // Selectors for all major sections on the work detail page
+    const sections = [
+        '.work-description', '.work-challenge', '.work-result',
+        '.work-blog', '.work-credits', '.work-testimonials',
+        '.work-gallery', '.work-nav-section'
+    ];
+
+    sections.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el && el.style.display !== 'none') {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        }
+    });
+}
+
+/**
  * Load and render work
  */
 async function loadWork() {
@@ -542,6 +585,9 @@ async function loadWork() {
         // Show page, hide loading
         workLoading.style.display = 'none';
         workPage.style.display = 'block';
+
+        // Initialize scroll reveals after content is rendered
+        requestAnimationFrame(() => initScrollReveal());
 
     } catch (error) {
         console.error('Failed to load work:', error);

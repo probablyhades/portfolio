@@ -193,6 +193,11 @@ function handleScroll() {
 // Event Listeners
 filterPills.addEventListener('click', (e) => {
     if (e.target.classList.contains('filter-pill')) {
+        // Brief press animation
+        e.target.style.transform = 'scale(0.93)';
+        setTimeout(() => {
+            e.target.style.transform = '';
+        }, 150);
         handleFilter(e.target.dataset.role);
     }
 });
@@ -208,4 +213,22 @@ document.addEventListener('DOMContentLoaded', () => {
     // Handle scroll for nav
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
+
+    // Scroll reveal observer for works header and grid
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.1,
+        rootMargin: '0px 0px -40px 0px'
+    });
+
+    document.querySelectorAll('.works-header, .filter-section').forEach(el => {
+        el.classList.add('reveal');
+        revealObserver.observe(el);
+    });
 });

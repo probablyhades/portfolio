@@ -384,7 +384,7 @@
 .work-gallery__image {
     width: 100%;
     cursor: pointer;
-    transition: var(--transition-base);
+    transition: transform 0.4s var(--ease-out-expo), filter 0.4s ease, border-color 0.2s ease, box-shadow 0.4s ease;
     aspect-ratio: 16 / 10;
     object-fit: cover;
     border: 1px solid var(--color-border);
@@ -394,6 +394,8 @@
 .work-gallery__image:hover {
     filter: grayscale(0%);
     border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* Lightbox */
@@ -408,7 +410,7 @@
     padding: var(--space-8);
     opacity: 0;
     visibility: hidden;
-    transition: var(--transition-base);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .lightbox.active {
@@ -421,6 +423,14 @@
     max-height: 90vh;
     object-fit: contain;
     border: 2px solid var(--color-accent);
+    transform: scale(0.92);
+    opacity: 0;
+    transition: transform 0.4s var(--ease-out-expo), opacity 0.3s ease;
+}
+
+.lightbox.active .lightbox__image {
+    transform: scale(1);
+    opacity: 1;
 }
 
 .lightbox__close {
@@ -436,11 +446,63 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: transform 0.3s var(--ease-out-expo);
+    z-index: 10;
 }
 
 .lightbox__close:hover {
     transform: rotate(90deg);
+}
+
+/* Lightbox Navigation Arrows */
+.lightbox__nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    background: transparent;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    color: var(--color-text-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s var(--ease-out-expo);
+    z-index: 10;
+}
+
+.lightbox__nav:hover {
+    border-color: var(--color-accent);
+    background: rgba(255, 85, 0, 0.1);
+}
+
+.lightbox__nav--prev {
+    left: var(--space-6);
+}
+
+.lightbox__nav--prev:hover {
+    transform: translateY(-50%) translateX(-2px);
+}
+
+.lightbox__nav--next {
+    right: var(--space-6);
+}
+
+.lightbox__nav--next:hover {
+    transform: translateY(-50%) translateX(2px);
+}
+
+.lightbox__counter {
+    position: absolute;
+    bottom: var(--space-6);
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: var(--font-mono);
+    font-size: var(--text-sm);
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
 }
 
 /* Work Navigation Section */
