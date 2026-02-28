@@ -348,11 +348,32 @@ function initLightbox(images) {
         }
     });
 
+    // Navigation
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex - 1, true);
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showImage(currentIndex + 1, true);
+    });
+
     // Close lightbox
     function closeLightbox() {
         lightbox.classList.remove('active');
         document.body.style.overflow = '';
     }
+
+    // Navigation click handlers
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showPrev();
+    });
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        showNext();
+    });
 
     closeBtn.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
@@ -375,6 +396,31 @@ function initLightbox(images) {
         if (e.key === 'ArrowLeft' && currentIndex > 0) showImage(currentIndex - 1);
         if (e.key === 'ArrowRight' && currentIndex < images.length - 1) showImage(currentIndex + 1);
     });
+
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchStartY = 0;
+
+    lightbox.addEventListener('touchstart', (e) => {
+        touchStartX = e.changedTouches[0].screenX;
+        touchStartY = e.changedTouches[0].screenY;
+    }, { passive: true });
+
+    lightbox.addEventListener('touchend', (e) => {
+        const touchEndX = e.changedTouches[0].screenX;
+        const touchEndY = e.changedTouches[0].screenY;
+        const dx = touchEndX - touchStartX;
+        const dy = touchEndY - touchStartY;
+
+        // Only trigger if horizontal swipe is dominant and exceeds threshold
+        if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.5) {
+            if (dx < 0) {
+                showImage(currentIndex + 1, true); // Swipe left → next
+            } else {
+                showImage(currentIndex - 1, true); // Swipe right → prev
+            }
+        }
+    }, { passive: true });
 }
 
 /**
@@ -509,6 +555,40 @@ function renderTestimonials(work) {
 }
 
 /**
+ * Initialize scroll reveal animations for sections
+ */
+function initScrollReveal() {
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -30px 0px'
+    });
+
+    // Selectors for all major sections on the work detail page
+    // NOTE: .work-gallery is excluded — adding a CSS transform to it
+    // breaks the lightbox's position:fixed (transforms create a new containing block)
+    const sections = [
+        '.work-description', '.work-challenge', '.work-result',
+        '.work-blog', '.work-credits', '.work-testimonials',
+        '.work-nav-section'
+    ];
+
+    sections.forEach(selector => {
+        const el = document.querySelector(selector);
+        if (el && el.style.display !== 'none') {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        }
+    });
+}
+
+/**
  * Load and render work
  */
 async function loadWork() {
@@ -549,6 +629,9 @@ async function loadWork() {
         // Show page, hide loading
         workLoading.style.display = 'none';
         workPage.style.display = 'block';
+
+        // Initialize scroll reveals after content is rendered
+        requestAnimationFrame(() => initScrollReveal());
 
     } catch (error) {
         console.error('Failed to load work:', error);

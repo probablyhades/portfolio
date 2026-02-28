@@ -1,6 +1,6 @@
 /**
  * Landing Page JavaScript
- * Loads recent works and handles animations
+ * Loads recent works, handles animations, and initializes particles
  */
 
 import {
@@ -10,6 +10,8 @@ import {
     getWorkImages,
     getWorkCoverImage
 } from './api.js';
+
+import { ParticleSystem } from './particles.js';
 
 // DOM Elements
 const worksGrid = document.getElementById('works-grid');
@@ -138,11 +140,11 @@ function handleScroll() {
  * Initialize intersection observer for scroll animations
  */
 function initScrollAnimations() {
-    const observer = new IntersectionObserver((entries) => {
+    const staggerObserver = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
                 entry.target.classList.add('animate');
-                observer.unobserve(entry.target);
+                staggerObserver.unobserve(entry.target);
             }
         });
     }, {
@@ -152,7 +154,39 @@ function initScrollAnimations() {
 
     // Observe elements with stagger class
     document.querySelectorAll('.stagger').forEach(el => {
-        observer.observe(el);
+        staggerObserver.observe(el);
+    });
+
+    // Scroll reveal observer for sections
+    const revealObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('revealed');
+                revealObserver.unobserve(entry.target);
+            }
+        });
+    }, {
+        threshold: 0.12,
+        rootMargin: '0px 0px -60px 0px'
+    });
+
+    // Add reveal class to all major homepage sections and observe them
+    const revealSelectors = [
+        '.section__header',
+        '.section__eyebrow',
+        '.showreel',
+        '.showreel__video',
+        '.works-section__cta',
+        '.showreel-section',
+        '.works-section',
+        '.footer'
+    ];
+
+    revealSelectors.forEach(selector => {
+        document.querySelectorAll(selector).forEach(el => {
+            el.classList.add('reveal');
+            revealObserver.observe(el);
+        });
     });
 }
 
@@ -160,6 +194,9 @@ function initScrollAnimations() {
 document.addEventListener('DOMContentLoaded', () => {
     loadRecentWorks();
     initScrollAnimations();
+
+    // Initialize particle system
+    new ParticleSystem('hero-particles');
 
     // Handle scroll for nav
     window.addEventListener('scroll', handleScroll, { passive: true });

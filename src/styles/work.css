@@ -73,9 +73,26 @@
     aspect-ratio: 16 / 9;
 }
 
+/* When hero contains a video, use aspect ratio instead of fixed height */
+.work-hero--video {
+    height: auto;
+    min-height: 0;
+    max-height: none;
+    overflow: visible;
+}
+
 .work-hero__media {
     width: 100%;
     height: 100%;
+}
+
+.work-hero--video .work-hero__media {
+    position: relative;
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
+    aspect-ratio: 16 / 9;
+    height: auto;
 }
 
 .work-hero__media img {
@@ -91,6 +108,14 @@
     border: none;
 }
 
+.work-hero--video .work-hero__media iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
 .work-hero__overlay {
     position: absolute;
     inset: 0;
@@ -101,6 +126,11 @@
     pointer-events: none;
 }
 
+/* Hide overlay when video is playing so YouTube controls are accessible */
+.work-hero--video .work-hero__overlay {
+    display: none;
+}
+
 /* Work Header */
 .work-header {
     padding: var(--space-12) var(--space-8) var(--space-8);
@@ -108,6 +138,12 @@
     position: relative;
     z-index: 10;
     overflow-x: hidden;
+}
+
+/* No negative margin when hero is a video player (no fade to blend into) */
+.work-hero--video~.work-header {
+    margin-top: 0;
+    padding-top: var(--space-8);
 }
 
 .work-header__container {
@@ -357,7 +393,7 @@
 .work-gallery__image {
     width: 100%;
     cursor: pointer;
-    transition: var(--transition-base);
+    transition: transform 0.4s var(--ease-out-expo), filter 0.4s ease, border-color 0.2s ease, box-shadow 0.4s ease;
     aspect-ratio: 16 / 10;
     object-fit: cover;
     border: 1px solid var(--color-border);
@@ -367,6 +403,8 @@
 .work-gallery__image:hover {
     filter: grayscale(0%);
     border-color: var(--color-accent);
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0, 0, 0, 0.3);
 }
 
 /* Lightbox */
@@ -381,7 +419,7 @@
     padding: var(--space-8);
     opacity: 0;
     visibility: hidden;
-    transition: var(--transition-base);
+    transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .lightbox.active {
@@ -394,6 +432,19 @@
     max-height: 90vh;
     object-fit: contain;
     border: 2px solid var(--color-accent);
+    transform: scale(0.92);
+    opacity: 0;
+    transition: transform 0.4s var(--ease-out-expo), opacity 0.3s ease;
+}
+
+.lightbox.active .lightbox__image {
+    transform: scale(1);
+    opacity: 1;
+}
+
+.lightbox__image--fade-out {
+    opacity: 0 !important;
+    transform: scale(0.97) !important;
 }
 
 .lightbox__close {
@@ -409,7 +460,8 @@
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    transition: var(--transition-fast);
+    transition: transform 0.3s var(--ease-out-expo);
+    z-index: 10;
 }
 
 .lightbox__close:hover {
@@ -733,9 +785,18 @@
         padding-top: 0;
     }
 
+    .work-hero--video {
+        height: auto;
+        min-height: 0;
+    }
+
     .work-header {
         margin-top: -50px;
         padding: var(--space-10) var(--space-6) var(--space-6);
+    }
+
+    .work-hero--video~.work-header {
+        margin-top: 0;
     }
 
     .work-header__back {
@@ -842,9 +903,18 @@
         margin-top: 0;
     }
 
+    .work-hero--video {
+        height: auto;
+        min-height: 0;
+    }
+
     .work-header {
         margin-top: -40px;
         padding: var(--space-6) var(--space-4) var(--space-4);
+    }
+
+    .work-hero--video~.work-header {
+        margin-top: 0;
     }
 
     .work-header__back {
