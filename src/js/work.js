@@ -71,7 +71,6 @@ function renderHero(work) {
     if (videoUrl) {
         const embedUrl = getYouTubeEmbedUrl(videoUrl);
         if (embedUrl) {
-            // Add video modifier class for proper aspect-ratio layout
             document.getElementById('work-hero').classList.add('work-hero--video');
             workHeroMedia.innerHTML = `
         <iframe 
@@ -298,7 +297,6 @@ function renderGallery(work) {
  */
 function initLightbox(images) {
     let currentIndex = 0;
-    let isTransitioning = false;
 
     // Create lightbox element
     const lightbox = document.createElement('div');
@@ -310,16 +308,15 @@ function initLightbox(images) {
         <line x1="6" y1="6" x2="18" y2="18"></line>
       </svg>
     </button>
-    <button class="lightbox__nav lightbox__nav--prev" aria-label="Previous image">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <button class="lightbox__prev" aria-label="Previous image">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <polyline points="15 18 9 12 15 6"></polyline>
       </svg>
     </button>
     <img src="" alt="" class="lightbox__image">
-    <button class="lightbox__nav lightbox__nav--next" aria-label="Next image">
-      <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <polyline points="9 18 15 12 9 6"></polyline>
+    <button class="lightbox__next" aria-label="Next image">
+      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polyline points="9 6 15 12 9 18"></polyline>
       </svg>
     </button>
     <div class="lightbox__counter"></div>
@@ -328,40 +325,24 @@ function initLightbox(images) {
 
     const lightboxImage = lightbox.querySelector('.lightbox__image');
     const closeBtn = lightbox.querySelector('.lightbox__close');
-    const prevBtn = lightbox.querySelector('.lightbox__nav--prev');
-    const nextBtn = lightbox.querySelector('.lightbox__nav--next');
+    const prevBtn = lightbox.querySelector('.lightbox__prev');
+    const nextBtn = lightbox.querySelector('.lightbox__next');
     const counter = lightbox.querySelector('.lightbox__counter');
 
-    function showImage(index, animate = false) {
-        if (animate && currentIndex !== index) {
-            // Crossfade transition
-            lightboxImage.classList.add('lightbox__image--switching');
-            setTimeout(() => {
-                currentIndex = (index + images.length) % images.length;
-                lightboxImage.src = images[currentIndex];
-                lightboxImage.alt = `Gallery image ${currentIndex + 1}`;
-                counter.textContent = `${currentIndex + 1} / ${images.length}`;
-                lightboxImage.classList.remove('lightbox__image--switching');
-            }, 180);
-        } else {
-            currentIndex = (index + images.length) % images.length;
-            lightboxImage.src = images[currentIndex];
-            lightboxImage.alt = `Gallery image ${currentIndex + 1}`;
-            counter.textContent = `${currentIndex + 1} / ${images.length}`;
-        }
-
-        // Toggle nav visibility for single-image galleries
-        const hasMultiple = images.length > 1;
-        prevBtn.style.display = hasMultiple ? 'flex' : 'none';
-        nextBtn.style.display = hasMultiple ? 'flex' : 'none';
-        counter.style.display = hasMultiple ? 'block' : 'none';
+    function showImage(index) {
+        currentIndex = index;
+        lightboxImage.src = images[currentIndex];
+        lightboxImage.alt = `Gallery image ${currentIndex + 1}`;
+        counter.textContent = `${currentIndex + 1} / ${images.length}`;
+        prevBtn.style.display = currentIndex > 0 ? '' : 'none';
+        nextBtn.style.display = currentIndex < images.length - 1 ? '' : 'none';
     }
 
     // Open lightbox on image click
     workGalleryGrid.addEventListener('click', (e) => {
         if (e.target.classList.contains('work-gallery__image')) {
             const index = parseInt(e.target.dataset.index);
-            showImageDirect(index);
+            showImage(index);
             lightbox.classList.add('active');
             document.body.style.overflow = 'hidden';
         }
@@ -399,12 +380,21 @@ function initLightbox(images) {
         if (e.target === lightbox) closeLightbox();
     });
 
-    // Keyboard navigation
+    prevBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentIndex > 0) showImage(currentIndex - 1);
+    });
+
+    nextBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (currentIndex < images.length - 1) showImage(currentIndex + 1);
+    });
+
     document.addEventListener('keydown', (e) => {
         if (!lightbox.classList.contains('active')) return;
         if (e.key === 'Escape') closeLightbox();
-        if (e.key === 'ArrowLeft') showImage(currentIndex - 1, true);
-        if (e.key === 'ArrowRight') showImage(currentIndex + 1, true);
+        if (e.key === 'ArrowLeft' && currentIndex > 0) showImage(currentIndex - 1);
+        if (e.key === 'ArrowRight' && currentIndex < images.length - 1) showImage(currentIndex + 1);
     });
 
     // Touch swipe support
@@ -447,31 +437,81 @@ function showError() {
  * @param {Object} work - Work data
  */
 function renderCredits(work) {
-    console.log('renderCredits called, work.content:', work.content);
     const credits = getWorkOtherCredits(work);
-    console.log('Credits found:', credits);
     const creditsSection = document.getElementById('work-credits');
 
     if (!creditsSection || credits.length === 0) {
-        console.log('No credits section element or empty credits');
         if (creditsSection) creditsSection.style.display = 'none';
         return;
     }
 
     const creditsGrid = document.getElementById('work-credits-grid');
-    creditsGrid.innerHTML = credits
-        .map(credit => {
-            const nameHtml = credit.link
-                ? `<a href="${credit.link}" class="work-credits__link" target="_blank" rel="noopener">${credit.name}</a>`
-                : `<span class="work-credits__name">${credit.name}</span>`;
-            return `
-                <div class="work-credits__item">
-                    ${nameHtml}
-                    <span class="work-credits__role">${credit.role}</span>
+    const MAX_VISIBLE = 6;
+    const visibleCredits = credits.slice(0, MAX_VISIBLE);
+
+    function renderCreditItem(credit) {
+        const nameHtml = credit.link
+            ? `<a href="${credit.link}" class="work-credits__link" target="_blank" rel="noopener">${credit.name}</a>`
+            : `<span class="work-credits__name">${credit.name}</span>`;
+        return `
+            <div class="work-credits__item">
+                ${nameHtml}
+                <span class="work-credits__role">${credit.role}</span>
+            </div>
+        `;
+    }
+
+    creditsGrid.innerHTML = visibleCredits.map(renderCreditItem).join('');
+
+    // If more than MAX_VISIBLE, add "See More" button and overlay
+    if (credits.length > MAX_VISIBLE) {
+        const seeMoreBtn = document.createElement('button');
+        seeMoreBtn.className = 'work-credits__see-more';
+        seeMoreBtn.innerHTML = `See All ${credits.length} Credits
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="9 6 15 12 9 18"></polyline>
+            </svg>`;
+        creditsGrid.parentElement.appendChild(seeMoreBtn);
+
+        // Create credits overlay
+        const overlay = document.createElement('div');
+        overlay.className = 'credits-overlay';
+        overlay.innerHTML = `
+            <div class="credits-overlay__content">
+                <div class="credits-overlay__header">
+                    <h2 class="credits-overlay__title">All Credits</h2>
+                    <button class="credits-overlay__close" aria-label="Close credits">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
                 </div>
-            `;
-        })
-        .join('');
+                <div class="credits-overlay__grid">
+                    ${credits.map(renderCreditItem).join('')}
+                </div>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
+        function openOverlay() {
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeOverlay() {
+            overlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        seeMoreBtn.addEventListener('click', openOverlay);
+        overlay.querySelector('.credits-overlay__close').addEventListener('click', closeOverlay);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeOverlay();
+        });
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && overlay.classList.contains('active')) closeOverlay();
+        });
+    }
 
     creditsSection.style.display = 'block';
 }
