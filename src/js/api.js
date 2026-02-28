@@ -6,11 +6,60 @@
 const API_BASE = 'https://connect.craft.do/links/pEuFum8B8X/api/v1';
 const COLLECTION_ID = '98E866EA-AE41-4560-9F38-D22495346770';
 
+const CACHE_KEY = 'craft_works_cache';
+const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
+
 /**
- * Fetch all portfolio works from Craft collection
+ * Check if the secret cache refresh parameter is present
+ * @returns {boolean}
+ */
+function shouldForceRefresh() {
+  const params = new URLSearchParams(window.location.search);
+  return params.get('refresh_cache') === 'true';
+}
+
+/**
+ * Remove the refresh_cache parameter from the URL without reload
+ */
+function cleanRefreshParam() {
+  const url = new URL(window.location.href);
+  url.searchParams.delete('refresh_cache');
+  window.history.replaceState({}, '', url.toString());
+}
+
+/**
+ * Fetch all portfolio works from Craft collection (with localStorage caching)
+ * Cache expires after 24 hours. Append ?refresh_cache=true to any page URL to force refresh.
  * @returns {Promise<Array>} Array of work items
  */
 export async function fetchWorks() {
+  const forceRefresh = shouldForceRefresh();
+
+  // If forcing refresh, clean the URL param
+  if (forceRefresh) {
+    cleanRefreshParam();
+  }
+
+  // Try reading from cache (unless forced refresh)
+  if (!forceRefresh) {
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { timestamp, data } = JSON.parse(cached);
+        if (Date.now() - timestamp < CACHE_TTL_MS) {
+          console.log('[Cache] Serving works from cache');
+          return data;
+        }
+        console.log('[Cache] Cache expired, fetching fresh data');
+      }
+    } catch (e) {
+      // Cache read failed, proceed to fetch
+      console.warn('[Cache] Failed to read cache:', e);
+    }
+  } else {
+    console.log('[Cache] Force refresh requested');
+  }
+
   try {
     const response = await fetch(`${API_BASE}/collections/${COLLECTION_ID}/items`, {
       headers: {
@@ -23,9 +72,33 @@ export async function fetchWorks() {
     }
 
     const data = await response.json();
-    return data.items || [];
+    const items = data.items || [];
+
+    // Store in cache
+    try {
+      localStorage.setItem(CACHE_KEY, JSON.stringify({
+        timestamp: Date.now(),
+        data: items
+      }));
+      console.log('[Cache] Works cached successfully');
+    } catch (e) {
+      console.warn('[Cache] Failed to write cache:', e);
+    }
+
+    return items;
   } catch (error) {
     console.error('Failed to fetch works:', error);
+
+    // Fallback: try serving stale cache if available
+    try {
+      const cached = localStorage.getItem(CACHE_KEY);
+      if (cached) {
+        const { data } = JSON.parse(cached);
+        console.log('[Cache] Serving stale cache as fallback');
+        return data;
+      }
+    } catch (e) { /* ignore */ }
+
     return [];
   }
 }
