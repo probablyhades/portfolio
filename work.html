@@ -185,22 +185,65 @@
 
     <!-- Footer -->
     <footer class="footer">
-        <div class="footer__container">
-            <p class="footer__text">&copy; 2026 40ºMedia. All rights reserved.</p>
-            <div class="footer__links">
-                <a href="mailto:harry@40degree.media" class="footer__link">harry@40degree.media</a>
-                <a href="https://instagram.com/40degreemedia" class="footer__link" target="_blank"
-                    rel="noopener noreferrer">Instagram</a>
-                <a href="https://linkedin.com/in/harrylewandowski" class="footer__link" target="_blank"
-                    rel="noopener noreferrer">LinkedIn</a>
-                <a href="https://40media.substack.com" class="footer__link" target="_blank"
-                    rel="noopener noreferrer">Substack</a>
+        <!-- Upper CTA -->
+        <div class="footer__upper">
+            <div class="footer__upper-inner">
+                <div class="footer__cta">
+                    <p class="footer__eyebrow">Available for projects</p>
+                    <h2 class="footer__heading">Let's make<br>something<br><span class="text-gradient">remarkable.</span></h2>
+                </div>
+                <div class="footer__contact">
+                    <a href="mailto:harry@40degree.media" class="btn btn--primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        Get in Touch
+                    </a>
+                    <div class="footer__socials">
+                        <a href="https://instagram.com/40degreemedia" class="footer__social" target="_blank" rel="noopener noreferrer">Instagram</a>
+                        <span class="footer__social-sep">/</span>
+                        <a href="https://linkedin.com/in/harrylewandowski" class="footer__social" target="_blank" rel="noopener noreferrer">LinkedIn</a>
+                        <span class="footer__social-sep">/</span>
+                        <a href="https://40media.substack.com" class="footer__social" target="_blank" rel="noopener noreferrer">Substack</a>
+                    </div>
+                </div>
             </div>
+        </div>
+
+        <!-- Giant Logo with parallax -->
+        <div class="footer__giant-wrap">
+            <div class="footer__giant-logo" id="footer-giant-logo">
+                <span class="footer__giant-accent">40º</span>Media
+            </div>
+        </div>
+
+        <!-- Bottom Bar -->
+        <div class="footer__bottom">
+            <p class="footer__copyright">&copy; 2026 40ºMedia. All rights reserved.</p>
+            <a href="mailto:harry@40degree.media" class="footer__bottom-email">harry@40degree.media</a>
         </div>
     </footer>
 
     <script type="module" src="src/js/work.js"></script>
     <script type="module" src="src/js/cursor.js"></script>
+    <script>
+        (function () {
+            var el = document.getElementById('footer-giant-logo');
+            if (!el) return;
+            var wrap = el.parentElement;
+            function update() {
+                var rect = wrap.getBoundingClientRect();
+                var progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
+                progress = Math.max(0, Math.min(1, progress));
+                var offset = (0.5 - progress) * 60;
+                el.style.transform = 'translateY(' + offset + 'px)';
+            }
+            window.addEventListener('scroll', update, { passive: true });
+            update();
+        })();
+    </script>
 </body>
 
 </html>
