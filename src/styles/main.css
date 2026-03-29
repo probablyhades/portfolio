@@ -609,8 +609,8 @@ ol {
 /* Giant Logo */
 .footer__giant-wrap {
     overflow: hidden;
-    line-height: 1;
     padding-top: var(--space-4);
+    padding-bottom: 0.1em;
     padding-left: var(--space-8);
     padding-right: var(--space-8);
 }
@@ -618,7 +618,7 @@ ol {
 .footer__giant-logo {
     font-family: var(--font-extended);
     font-size: 20vw; /* JS overrides this to fit exactly */
-    line-height: 0.85;
+    line-height: 1;
     letter-spacing: -0.02em;
     color: var(--color-text-primary);
     white-space: nowrap;
@@ -866,6 +866,11 @@ ol {
         padding: var(--space-14) var(--space-6) var(--space-10);
     }
 
+    .footer__giant-wrap {
+        padding-left: var(--space-6);
+        padding-right: var(--space-6);
+    }
+
     .footer__heading {
         font-size: clamp(2rem, 7vw, 3.5rem);
     }
@@ -937,6 +942,11 @@ ol {
         padding: var(--space-12) var(--space-4) var(--space-10);
     }
 
+    .footer__giant-wrap {
+        padding-left: var(--space-4);
+        padding-right: var(--space-4);
+    }
+
     .footer__bottom {
         padding: var(--space-5) var(--space-4);
     }
@@ -982,6 +992,11 @@ ol {
 
     .footer__upper {
         padding: var(--space-10) var(--space-3) var(--space-8);
+    }
+
+    .footer__giant-wrap {
+        padding-left: var(--space-3);
+        padding-right: var(--space-3);
     }
 
     .footer__socials {
