@@ -861,6 +861,14 @@ ol {
         gap: var(--space-10);
     }
 
+    .footer__upper {
+        padding: var(--space-14) var(--space-6) var(--space-10);
+    }
+
+    .footer__heading {
+        font-size: clamp(2rem, 7vw, 3.5rem);
+    }
+
     .footer__contact {
         align-items: flex-start;
     }
@@ -871,6 +879,7 @@ ol {
 
     .footer__bottom {
         flex-direction: column;
+        align-items: center;
         gap: var(--space-3);
         text-align: center;
     }
@@ -968,6 +977,22 @@ ol {
 
     .section {
         padding: var(--space-10) var(--space-3);
+    }
+
+    .footer__upper {
+        padding: var(--space-10) var(--space-3) var(--space-8);
+    }
+
+    .footer__socials {
+        gap: var(--space-2);
+    }
+
+    .footer__social-sep {
+        display: none;
+    }
+
+    .footer__bottom {
+        padding: var(--space-4) var(--space-3);
     }
 }
 
