@@ -126,8 +126,8 @@ class CustomCursor {
         this.ringY += (this.mouseY - this.ringY) * this.lerp;
 
         // Dot follows exactly
-        this.dot.style.transform = `translate(${this.mouseX}px, ${this.mouseY}px)`;
-        this.ring.style.transform = `translate(${this.ringX}px, ${this.ringY}px)`;
+        this.dot.style.transform = `translate(${this.mouseX}px, ${this.mouseY}px) translate(-50%, -50%)`;
+        this.ring.style.transform = `translate(${this.ringX}px, ${this.ringY}px) translate(-50%, -50%)`;
 
         requestAnimationFrame(() => this.animate());
     }

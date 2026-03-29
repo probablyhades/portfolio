@@ -911,7 +911,6 @@ ol {
     pointer-events: none;
     z-index: 99999;
     mix-blend-mode: difference;
-    transform: translate(-50%, -50%);
     transition: width 0.2s ease, height 0.2s ease, opacity 0.2s ease;
     will-change: transform;
 }
@@ -927,7 +926,6 @@ ol {
     pointer-events: none;
     z-index: 99998;
     mix-blend-mode: difference;
-    transform: translate(-50%, -50%);
     transition: width 0.3s var(--ease-out-expo),
         height 0.3s var(--ease-out-expo),
         border-color 0.3s ease,
