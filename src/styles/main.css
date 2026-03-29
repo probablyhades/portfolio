@@ -872,7 +872,8 @@ ol {
     }
 
     .footer__heading {
-        font-size: clamp(2rem, 7vw, 3.5rem);
+        font-size: clamp(1.5rem, 6.5vw, 3.5rem);
+        line-height: 1;
     }
 
     .footer__contact {
@@ -1002,6 +1003,10 @@ ol {
     .footer__giant-wrap {
         padding-left: var(--space-3);
         padding-right: var(--space-3);
+    }
+
+    .footer__heading {
+        font-size: clamp(1.25rem, 5.5vw, 2rem);
     }
 
     .footer__socials {
