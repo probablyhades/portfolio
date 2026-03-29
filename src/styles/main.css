@@ -610,7 +610,7 @@ ol {
 .footer__giant-wrap {
     overflow: hidden;
     padding-top: var(--space-4);
-    padding-bottom: 0.1em;
+    padding-bottom: 2.5rem;
     padding-left: var(--space-8);
     padding-right: var(--space-8);
 }
@@ -877,6 +877,11 @@ ol {
 
     .footer__contact {
         align-items: flex-start;
+        width: 100%;
+    }
+
+    .footer__cta {
+        width: 100%;
     }
 
     .footer__socials {
