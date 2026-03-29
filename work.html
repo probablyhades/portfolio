@@ -230,18 +230,39 @@
     <script type="module" src="src/js/cursor.js"></script>
     <script>
         (function () {
-            var el = document.getElementById('footer-giant-logo');
-            if (!el) return;
-            var wrap = el.parentElement;
-            function update() {
+            var logo = document.getElementById('footer-giant-logo');
+            if (!logo) return;
+            var wrap = logo.parentElement;
+
+            function fitLogo() {
+                logo.style.fontSize = '30vw';
+                var style = getComputedStyle(wrap);
+                var available = wrap.clientWidth
+                    - parseFloat(style.paddingLeft)
+                    - parseFloat(style.paddingRight);
+                var textWidth = logo.scrollWidth;
+                if (available > 0 && textWidth > 0) {
+                    var ratio = available / textWidth;
+                    var cur = parseFloat(getComputedStyle(logo).fontSize);
+                    logo.style.fontSize = (cur * ratio * 0.99) + 'px';
+                }
+            }
+
+            function updateParallax() {
                 var rect = wrap.getBoundingClientRect();
                 var progress = (window.innerHeight - rect.top) / (window.innerHeight + rect.height);
                 progress = Math.max(0, Math.min(1, progress));
-                var offset = (0.5 - progress) * 60;
-                el.style.transform = 'translateY(' + offset + 'px)';
+                logo.style.transform = 'translateY(' + ((0.5 - progress) * 60) + 'px)';
             }
-            window.addEventListener('scroll', update, { passive: true });
-            update();
+
+            function init() {
+                fitLogo();
+                window.addEventListener('resize', fitLogo);
+                window.addEventListener('scroll', updateParallax, { passive: true });
+                updateParallax();
+            }
+
+            document.fonts ? document.fonts.ready.then(init) : window.addEventListener('load', init);
         })();
     </script>
 </body>
