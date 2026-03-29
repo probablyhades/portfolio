@@ -37,7 +37,7 @@ function createWorkCard(work) {
     // Get cover image or fallback to first gallery image
     const coverImage = getWorkCoverImage(work);
     const galleryImages = getWorkImages(work);
-    const imageUrl = coverImage || galleryImages[0] || 'assets/images/placeholder.jpg';
+    const imageUrl = coverImage || galleryImages[0] || 'assets/images/placeholder.png';
 
     // Get work title
     const title = work.production || work.title || 'Untitled Work';
