@@ -365,29 +365,9 @@ function initLightbox(images) {
         document.body.style.overflow = '';
     }
 
-    // Navigation click handlers
-    prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showPrev();
-    });
-    nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        showNext();
-    });
-
     closeBtn.addEventListener('click', closeLightbox);
     lightbox.addEventListener('click', (e) => {
         if (e.target === lightbox) closeLightbox();
-    });
-
-    prevBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (currentIndex > 0) showImage(currentIndex - 1);
-    });
-
-    nextBtn.addEventListener('click', (e) => {
-        e.stopPropagation();
-        if (currentIndex < images.length - 1) showImage(currentIndex + 1);
     });
 
     document.addEventListener('keydown', (e) => {
