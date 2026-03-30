@@ -255,10 +255,41 @@ export function getWorkVideo(work) {
 
   const richUrl = work.content.find(block =>
     block.type === 'richUrl' &&
-    (block.url?.includes('youtube.com') || block.url?.includes('vimeo.com'))
+    (block.url?.includes('youtube.com') || block.url?.includes('vimeo.com') ||
+     block.url?.includes('twitch.tv') || block.url?.includes('clips.twitch.tv'))
   );
 
   return richUrl?.url || null;
+}
+
+/**
+ * Convert Twitch VOD/highlight/clip URL to embed URL
+ * @param {string} url - Twitch URL
+ * @returns {string|null} Embed URL or null
+ */
+export function getTwitchEmbedUrl(url) {
+  if (!url) return null;
+
+  // Use current hostname for the required parent parameter; fall back to localhost
+  const parent = (typeof window !== 'undefined' && window.location.hostname) || 'localhost';
+
+  // Handle twitch.tv/videos/VIDEO_ID (VODs and highlights)
+  const vodMatch = url.match(/twitch\.tv\/videos\/(\d+)/);
+  if (vodMatch) {
+    return `https://player.twitch.tv/?video=${vodMatch[1]}&parent=${parent}&autoplay=false`;
+  }
+
+  // Handle clips.twitch.tv/CLIP_SLUG or twitch.tv/CHANNEL/clip/CLIP_SLUG
+  const clipSlugMatch = url.match(/clips\.twitch\.tv\/([a-zA-Z0-9_-]+)/);
+  if (clipSlugMatch) {
+    return `https://clips.twitch.tv/embed?clip=${clipSlugMatch[1]}&parent=${parent}&autoplay=false`;
+  }
+  const channelClipMatch = url.match(/twitch\.tv\/[^/]+\/clip\/([a-zA-Z0-9_-]+)/);
+  if (channelClipMatch) {
+    return `https://clips.twitch.tv/embed?clip=${channelClipMatch[1]}&parent=${parent}&autoplay=false`;
+  }
+
+  return null;
 }
 
 /**

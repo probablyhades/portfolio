@@ -13,6 +13,7 @@ import {
     getWorkImages,
     getWorkVideo,
     getYouTubeEmbedUrl,
+    getTwitchEmbedUrl,
     getWorkCoverImage,
     getWorkVideoUrl,
     getWorkOtherCredits,
@@ -69,14 +70,28 @@ function renderHero(work) {
     const images = getWorkImages(work);
 
     if (videoUrl) {
-        const embedUrl = getYouTubeEmbedUrl(videoUrl);
-        if (embedUrl) {
+        const youtubeEmbedUrl = getYouTubeEmbedUrl(videoUrl);
+        if (youtubeEmbedUrl) {
             document.getElementById('work-hero').classList.add('work-hero--video');
             workHeroMedia.innerHTML = `
-        <iframe 
-          src="${embedUrl}?autoplay=0&rel=0&modestbranding=1" 
+        <iframe
+          src="${youtubeEmbedUrl}?autoplay=0&rel=0&modestbranding=1"
           title="${work.production || work.title}"
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+        ></iframe>
+      `;
+            return;
+        }
+
+        const twitchEmbedUrl = getTwitchEmbedUrl(videoUrl);
+        if (twitchEmbedUrl) {
+            document.getElementById('work-hero').classList.add('work-hero--video');
+            workHeroMedia.innerHTML = `
+        <iframe
+          src="${twitchEmbedUrl}"
+          title="${work.production || work.title}"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
           allowfullscreen
         ></iframe>
       `;
