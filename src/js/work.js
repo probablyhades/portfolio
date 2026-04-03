@@ -21,6 +21,8 @@ import {
     getWorkBlogUrl
 } from './api.js';
 
+import { fetchWorks as fetchMotionWorks } from './motionapi.js';
+
 // DOM Elements
 const workLoading = document.getElementById('work-loading');
 const workPage = document.getElementById('work-page');
@@ -600,7 +602,13 @@ async function loadWork() {
         const publishedWorks = filterPublishedWorks(allWorks);
 
         // Find the specific work
-        const work = getWorkById(publishedWorks, workId);
+        let work = getWorkById(publishedWorks, workId);
+
+        if (!work) {
+            const motionWorks = await fetchMotionWorks();
+            const publishedMotionWorks = filterPublishedWorks(motionWorks);
+            work = getWorkById(publishedMotionWorks, workId);
+        }
 
         if (!work) {
             showError();

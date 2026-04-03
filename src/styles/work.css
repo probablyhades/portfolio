@@ -66,18 +66,13 @@
 }
 
 .work-hero--video {
-    padding-top: 0;
+    padding-top: 60px;
     height: auto;
     min-height: 0;
     max-height: none;
-    aspect-ratio: 16 / 9;
-}
-
-/* When hero contains a video, use aspect ratio instead of fixed height */
-.work-hero--video {
-    height: auto;
-    min-height: 0;
-    max-height: none;
+    background-color: #050505;
+    display: flex;
+    align-items: center;
     overflow: visible;
 }
 
@@ -782,12 +777,9 @@
     }
 
     .work-hero--video {
-        padding-top: 0;
-    }
-
-    .work-hero--video {
         height: auto;
         min-height: 0;
+        padding-top: 55px;
     }
 
     .work-header {
