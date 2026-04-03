@@ -6,7 +6,7 @@
 const API_BASE = 'https://connect.craft.do/links/LbrgPCaJwXv/api/v1';
 const COLLECTION_ID = '153080C5-BD34-4D7A-84AE-33EB7F141584';
 
-const CACHE_KEY = 'craft_works_cache';
+const CACHE_KEY = 'craft_motion_cache';
 const CACHE_TTL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
 /**
